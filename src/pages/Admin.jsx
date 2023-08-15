@@ -12,15 +12,19 @@ import {
 } from "firebase/firestore/lite";
 import useDishManagement from "../hooks/useDishManagement";
 import CustomInput from "../components/customInput/CustomInput";
+import CustomModal from "../components/customModal/CustomModal";
 
 const Admin = () => {
   const [percent, setPercent] = useState(0);
   const [file, setFile] = useState("");
-  const [openModal, setOpenModal] = useState(false);
+  const [openAddImgModal, setOpenAddImgModal] = useState(false);
+  const [openDishModal, setOpenDishModal] = useState(false);
+  const [openAllDishes, setOpenAllDishes] = useState(false);
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
 
+  // image handling
   const onClickUploadImage = (e) => {
     setFile(e.target.files[0]);
   };
@@ -60,10 +64,11 @@ const Admin = () => {
     }
   };
 
-  const onClickOpenModal = () => {
-    setOpenModal(true);
+  const onClickOpenAddImgModal = () => {
+    setOpenAddImgModal(true);
   };
 
+  // delete dish from list
   const deleteHandler = async (dishId) => {
     try {
       await deleteDoc(doc(db, "dishes", dishId));
@@ -74,10 +79,7 @@ const Admin = () => {
     }
   };
 
-  const onClickGetData = () => {
-    getData();
-  };
-
+  // fetch all dishes from db
   const getData = async () => {
     try {
       const data = collection(db, "dishes");
@@ -92,6 +94,13 @@ const Admin = () => {
     }
   };
 
+  // open new page with dishes
+  const onClickSeeAllDishes = () => {
+    setOpenAllDishes(!openAllDishes);
+    getData();
+  };
+
+  // submit new dish
   const onSubmitDishHandler = async (e) => {
     e.preventDefault();
 
@@ -119,7 +128,7 @@ const Admin = () => {
 
   const addImageModal = (
     <div className=" fixed inset-0 bg-black bg-opacity-50 transition-opacity">
-      <div className=" relative w-full max-w-md p-6 mx-auto mt-20 bg-white rounded-lg shadow-md">
+      <div className=" relative w-full max-w-md p-6 mx-auto mt-20 bg-white rounded-lg shadow-md ">
         <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
         <input type="file" accept="image/*" onChange={onClickUploadImage} />
         <button
@@ -138,7 +147,7 @@ const Admin = () => {
         ) : null}
         <button
           className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
-          onClick={() => setOpenModal(!openModal)}
+          onClick={() => setOpenAddImgModal(!openAddImgModal)}
         >
           <svg
             className="h-6 w-6"
@@ -159,7 +168,7 @@ const Admin = () => {
   );
 
   const renderInputs = (
-    <section className=" lg:flex flex-col w-2/4 mx-auto">
+    <section className=" w-full lg:flex flex-col lg:w-2/4 mx-auto md:flex md:w-3/4 sm: flex sm:w-full ">
       <CustomInput
         name="name"
         value={dish.name}
@@ -188,67 +197,100 @@ const Admin = () => {
   );
 
   return (
-    <div className="lg:mx-auto w-2/3 text-center p-8">
-      <button
-        onClick={onClickGetData}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600"
-      >
-        Get Dishes
-      </button>
-      <form
-        onSubmit={onSubmitDishHandler}
-        className="bg-gray-100 p-6 rounded-lg"
-      >
-        <button
-          onClick={onClickOpenModal}
-          className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
-        >
-          Add image
-        </button>
-        {openModal && addImageModal}
-        {renderInputs}
-        <button
-          type="submit"
-          className={`${
-            !dish.name || !dish.price || !dish.description || percent !== 100
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          } text-white px-4 py-2 rounded-lg`}
-          disabled={
-            !dish.name || !dish.price || !dish.description || percent !== 100
-          }
-        >
-          Add Dish
-        </button>
-      </form>
-      <div className=" grid-cols-3 grid gap-4 mt-8">
-        {dishes.map((el, index) => (
-          <div
-            key={index}
-            id={el.id}
-            className="flex items-center justify-between space-x-4 border p-4 rounded-lg bg-white"
+    <>
+      {!openAllDishes ? (
+        <div className="lg:mx-auto lg:w-2/3 text-center p-8 md:w-11/12 mx-auto sm:w-full">
+          <form
+            onSubmit={onSubmitDishHandler}
+            className="bg-gray-100 p-6 rounded-lg"
           >
-            <img
-              src={el.image}
-              className="w-16 h-16 object-cover rounded"
-              loading="lazy"
-              alt={el.name}
-            />
-            <div>
-              <p className="text-lg font-semibold">{el.name}</p>
-              <p className="text-gray-600">${el.price}</p>
-              <p className="text-gray-500">{el.description}</p>
+            {openAddImgModal && addImageModal}
+            {renderInputs}
+            <div className=" flex flex-col mx-auto w-32">
+              <button
+                onClick={onClickOpenAddImgModal}
+                className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
+              >
+                Add image
+              </button>
+              <button
+                type="submit"
+                className={`${
+                  !dish.name ||
+                  !dish.price ||
+                  !dish.description ||
+                  percent !== 100
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white px-4 py-2 rounded-lg`}
+                disabled={
+                  !dish.name ||
+                  !dish.price ||
+                  !dish.description ||
+                  percent !== 100
+                }
+                title={
+                  !dish.name ||
+                  !dish.price ||
+                  !dish.description ||
+                  percent !== 100
+                    ? "Please fill in all fields before adding"
+                    : ""
+                }
+              >
+                Add Dish
+              </button>
             </div>
+          </form>
+          <div>
             <button
-              onClick={() => deleteHandler(el.id)}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+              onClick={onClickSeeAllDishes}
+              className=" text-white px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 mt-4"
             >
-              Remove
+              See all dishes
             </button>
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+      ) : (
+        <>
+          <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg">
+            {dishes.map((el, index) => (
+              <div
+                key={index}
+                id={el.id}
+                className="flex items-center justify-between space-x-4 border p-4 rounded-lg bg-white"
+              >
+                <img
+                  src={el.image}
+                  className="w-16 h-16 object-cover rounded"
+                  loading="lazy"
+                  alt={el.name}
+                />
+                <div>
+                  <p className="text-lg font-semibold">{el.name}</p>
+                  <p className="text-gray-600">${el.price}</p>
+                  <p className="text-gray-500">{el.description}</p>
+                </div>
+                <button
+                  onClick={() => deleteHandler(el.id)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-center">
+            <button
+              onClick={onClickSeeAllDishes}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Back to Add Dish
+            </button>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
