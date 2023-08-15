@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react"; // Import useState to store the fetched data
+import { useState, useEffect } from "react";
 import { db, storage } from "./../firebase-config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import {
@@ -8,16 +8,20 @@ import {
   getDocs,
   addDoc,
   deleteDoc,
-  setDoc,
 } from "firebase/firestore/lite";
+import { v4 as uuidv4 } from "uuid";
+import CustomInput from "../components/customInput/CustomInput";
+
+const defaultDishValues = {
+  id: "",
+  name: "",
+  price: 0,
+  description: "",
+  image: "",
+};
 
 const Admin = () => {
-  const [dish, setDish] = useState({
-    name: "",
-    price: 0,
-    description: "",
-    image: "",
-  });
+  const [dish, setDish] = useState(defaultDishValues);
   const [dishes, setDishes] = useState([]);
   const [percent, setPercent] = useState(0);
   const [file, setFile] = useState("");
@@ -30,11 +34,11 @@ const Admin = () => {
     try {
       const data = collection(db, "dishes");
       const dishesSnapshot = await getDocs(data);
-      const dishesData = [];
-      dishesSnapshot.forEach((doc) => {
-        dishesData.push(doc.data());
+      const dishesData = dishesSnapshot.docs.map((el) => {
+        return { ...el.data(), id: el.id };
       });
       setDishes(dishesData);
+      console.log(dishesData);
     } catch (error) {
       console.log(error);
     }
@@ -70,68 +74,91 @@ const Admin = () => {
   };
 
   const onChangeHandler = (e) => {
-    setDish({ ...dish, [e.target.name]: e.target.value });
+    setDish({ ...dish, id: uuidv4(), [e.target.name]: e.target.value });
   };
 
-  const onSubmitDishHandler = (e) => {
+  const onSubmitDishHandler = async (e) => {
     e.preventDefault();
-    setDishes([...dishes, dish]);
-    onClickAddToDatabase();
-    console.log(dish);
-    console.log(dishes);
+
+    if (percent !== 100) {
+      alert("Please wait for image upload");
+      return;
+    }
+
+    const newDish = { ...dish, id: uuidv4() };
+
+    await onClickAddToDatabase(newDish);
+
+    const updatedDishes = [...dishes, newDish];
+    setDishes(updatedDishes);
+    setDish(defaultDishValues);
+    setFile("");
+    setPercent(0);
   };
 
-  const onClickAddToDatabase = async () => {
+  const onClickAddToDatabase = async (newDish) => {
     try {
-      const addingDish = { dish: dish };
       const dishesCollection = collection(db, "dishes");
-      await addDoc(dishesCollection, addingDish);
+      await addDoc(dishesCollection, newDish);
     } catch (error) {
       console.log("Error adding to database", error);
     }
   };
 
+  const deleteHandler = async (dishId) => {
+    try {
+      await deleteDoc(doc(db, "dishes", dishId));
+      await getData();
+      console.log(dishId);
+    } catch (error) {
+      console.log("Deleting dish error", error);
+    }
+  };
+
+  const renderInputs = (
+    <>
+      <CustomInput
+        name="name"
+        value={dish.name}
+        type="text"
+        onChange={onChangeHandler}
+        label="Name"
+      />
+      <CustomInput
+        name="price"
+        value={dish.price}
+        type="number"
+        onChange={onChangeHandler}
+        label="Price"
+      />
+      <CustomInput
+        name="description"
+        value={dish.description}
+        type="text"
+        onChange={onChangeHandler}
+        label="Description"
+      />
+    </>
+  );
+
   return (
     <div>
       <button onClick={onClickGetData}>Get Dishes</button>
       <form onSubmit={onSubmitDishHandler}>
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={dish.name}
-          onChange={onChangeHandler}
-          required
-        />
-        <label>Price</label>
-        <input
-          type="number"
-          name="price"
-          value={dish.price}
-          onChange={onChangeHandler}
-          required
-        />
-        <label>Description</label>
-        <input
-          type="text"
-          name="description"
-          value={dish.description}
-          onChange={onChangeHandler}
-          required
-        />
+        {renderInputs}
         <input
           type="file"
           accept="image/*"
           onChange={onClickUploadImage}
           required
         />
-        <button onClick={handleImageUpload}>Upload to Firebase</button>
+        <button onClick={handleImageUpload}>add image</button>
         <p>{percent}% done</p>
         <button type="submit">Add dish</button>
       </form>
       <ul>
         {dishes.map((el, index) => (
-          <div key={index}>
+          <div key={index} id={el.id}>
             <img
               src={el.image}
               style={{ width: 100, height: 100 }}
@@ -141,6 +168,7 @@ const Admin = () => {
               Name: {el.name}, Price: {el.price}, Desc:
               {el.description}
             </li>
+            <button onClick={() => deleteHandler(el.id)}>Remove</button>
           </div>
         ))}
       </ul>
