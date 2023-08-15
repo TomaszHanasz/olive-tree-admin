@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const CustomInput = (props) => {
-  const { type, name, value, onChange, label } = props;
+  const { type, name, value, onChange, label, className } = props;
 
   return (
     <>
@@ -12,7 +12,7 @@ const CustomInput = (props) => {
         name={name}
         value={value}
         onChange={onChange}
-        required
+        className={className}
       />
     </>
   );
@@ -24,6 +24,7 @@ CustomInput.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   onChange: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
+  className: PropTypes.string,
 };
 
 export default CustomInput;

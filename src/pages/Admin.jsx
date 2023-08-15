@@ -16,6 +16,7 @@ import CustomInput from "../components/customInput/CustomInput";
 const Admin = () => {
   const [percent, setPercent] = useState(0);
   const [file, setFile] = useState("");
+  const [openModal, setOpenModal] = useState(false);
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
@@ -28,6 +29,7 @@ const Admin = () => {
     if (!file) {
       return alert("Please choose a file first!");
     }
+
     const storageRef = ref(storage, `/files/${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -56,6 +58,10 @@ const Admin = () => {
     } catch (error) {
       console.log("Error adding to database", error);
     }
+  };
+
+  const onClickOpenModal = () => {
+    setOpenModal(true);
   };
 
   const deleteHandler = async (dishId) => {
@@ -111,14 +117,56 @@ const Admin = () => {
     setPercent(0);
   };
 
+  const addImageModal = (
+    <div className=" fixed inset-0 bg-black bg-opacity-50 transition-opacity">
+      <div className=" relative w-full max-w-md p-6 mx-auto mt-20 bg-white rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
+        <input type="file" accept="image/*" onChange={onClickUploadImage} />
+        <button
+          className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={handleImageUpload}
+        >
+          Add Image
+        </button>
+        <p className="mt-2">{percent}% done</p>
+        {percent === 100 ? (
+          <img
+            src={dish.image}
+            alt="Preview"
+            className="mt-4 max-w-full h-auto"
+          />
+        ) : null}
+        <button
+          className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
+          onClick={() => setOpenModal(!openModal)}
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+
   const renderInputs = (
-    <>
+    <section className=" lg:flex flex-col w-2/4 mx-auto">
       <CustomInput
         name="name"
         value={dish.name}
         type="text"
         onChange={onChangeHandler}
         label="Name"
+        className=" lg: w-1/2 mx-auto mb-4"
       />
       <CustomInput
         name="price"
@@ -126,6 +174,7 @@ const Admin = () => {
         type="number"
         onChange={onChangeHandler}
         label="Price"
+        className=" lg: w-1/2 mx-auto mb-4"
       />
       <CustomInput
         name="description"
@@ -133,42 +182,72 @@ const Admin = () => {
         type="text"
         onChange={onChangeHandler}
         label="Description"
+        className=" lg: w-1/2 mx-auto mb-4"
       />
-    </>
+    </section>
   );
 
   return (
-    <div>
-      <button onClick={onClickGetData}>Get Dishes</button>
-      <form onSubmit={onSubmitDishHandler}>
+    <div className="lg:mx-auto w-2/3 text-center p-8">
+      <button
+        onClick={onClickGetData}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600"
+      >
+        Get Dishes
+      </button>
+      <form
+        onSubmit={onSubmitDishHandler}
+        className="bg-gray-100 p-6 rounded-lg"
+      >
+        <button
+          onClick={onClickOpenModal}
+          className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
+        >
+          Add image
+        </button>
+        {openModal && addImageModal}
         {renderInputs}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={onClickUploadImage}
-          required
-        />
-        <button onClick={handleImageUpload}>add image</button>
-        <p>{percent}% done</p>
-        <button type="submit">Add dish</button>
+        <button
+          type="submit"
+          className={`${
+            !dish.name || !dish.price || !dish.description || percent !== 100
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          } text-white px-4 py-2 rounded-lg`}
+          disabled={
+            !dish.name || !dish.price || !dish.description || percent !== 100
+          }
+        >
+          Add Dish
+        </button>
       </form>
-      <ul>
+      <div className=" grid-cols-3 grid gap-4 mt-8">
         {dishes.map((el, index) => (
-          <div key={index} id={el.id}>
+          <div
+            key={index}
+            id={el.id}
+            className="flex items-center justify-between space-x-4 border p-4 rounded-lg bg-white"
+          >
             <img
               src={el.image}
-              style={{ width: 100, height: 100 }}
+              className="w-16 h-16 object-cover rounded"
               loading="lazy"
               alt={el.name}
             />
-            <li>
-              Name: {el.name}, Price: {el.price}, Desc:
-              {el.description}
-            </li>
-            <button onClick={() => deleteHandler(el.id)}>Remove</button>
+            <div>
+              <p className="text-lg font-semibold">{el.name}</p>
+              <p className="text-gray-600">${el.price}</p>
+              <p className="text-gray-500">{el.description}</p>
+            </div>
+            <button
+              onClick={() => deleteHandler(el.id)}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Remove
+            </button>
           </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
