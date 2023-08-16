@@ -20,6 +20,7 @@ const Admin = () => {
   const [openAddImgModal, setOpenAddImgModal] = useState(false);
   const [openDishModal, setOpenDishModal] = useState(false);
   const [openAllDishes, setOpenAllDishes] = useState(false);
+  const [selectedDish, setSelectedDish] = useState({});
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
@@ -73,7 +74,7 @@ const Admin = () => {
     try {
       await deleteDoc(doc(db, "dishes", dishId));
       await getData();
-      console.log(dishId);
+      setOpenDishModal(false);
     } catch (error) {
       console.log("Deleting dish error", error);
     }
@@ -124,6 +125,13 @@ const Admin = () => {
     });
     setFile("");
     setPercent(0);
+  };
+
+  //open dish modal
+  const onClickSelectDish = (dish) => {
+    setSelectedDish({ ...dish });
+    setOpenDishModal(!openDishModal);
+    console.log(selectedDish);
   };
 
   const addImageModal = (
@@ -253,12 +261,24 @@ const Admin = () => {
         </div>
       ) : (
         <>
+          {openDishModal && selectedDish && (
+            <CustomModal
+              name={selectedDish.name}
+              description={selectedDish.description}
+              price={selectedDish.price}
+              image={selectedDish.image}
+              id={selectedDish.id}
+              deleteHandler={() => deleteHandler(selectedDish.id)}
+              onClick={() => setOpenDishModal(!openDishModal)}
+            />
+          )}
           <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg">
             {dishes.map((el, index) => (
               <div
                 key={index}
                 id={el.id}
-                className="flex items-center justify-between space-x-4 border p-4 rounded-lg bg-white"
+                className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
+                onClick={() => onClickSelectDish(el)}
               >
                 <img
                   src={el.image}
@@ -268,15 +288,8 @@ const Admin = () => {
                 />
                 <div>
                   <p className="text-lg font-semibold">{el.name}</p>
-                  <p className="text-gray-600">${el.price}</p>
-                  <p className="text-gray-500">{el.description}</p>
+                  <p className="text-lg font-semibold">${el.price}</p>
                 </div>
-                <button
-                  onClick={() => deleteHandler(el.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                >
-                  Remove
-                </button>
               </div>
             ))}
           </div>

@@ -22,7 +22,7 @@ CustomInput.propTypes = {
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onChange: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
