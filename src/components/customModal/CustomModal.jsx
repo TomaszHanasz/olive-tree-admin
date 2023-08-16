@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const CustomModal = (props) => {
   const { name, image, price, description, onClick, deleteHandler, id } = props;
+
+  const [confirmRemoval, setConfirmRemoval] = useState(false);
+
+  const onClickConfirm = () => {
+    setConfirmRemoval(!confirmRemoval);
+  };
+
+  const onCloseModal = () => {
+    setConfirmRemoval(false);
+    onClick();
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
@@ -21,7 +32,7 @@ const CustomModal = (props) => {
         </div>
         <button
           className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
-          onClick={onClick}
+          onClick={onCloseModal}
         >
           <svg
             className="h-6 w-6"
@@ -38,12 +49,33 @@ const CustomModal = (props) => {
           </svg>
         </button>
         <div className="mt-auto text-center">
-          <button
-            onClick={deleteHandler}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-          >
-            Remove
-          </button>
+          {confirmRemoval ? (
+            <div className=" w-28">
+              <h2>Are you sure?</h2>
+              <button
+                onClick={deleteHandler}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 mb-2"
+              >
+                Remove
+              </button>
+              <button
+                onClick={onClickConfirm}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 "
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div className=" w-28">
+              <h2>Remove dish</h2>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                onClick={onClickConfirm}
+              >
+                Remove
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
