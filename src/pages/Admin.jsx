@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 import { db, storage } from "./../firebase-config";
@@ -18,10 +18,9 @@ import "./admin.style.css";
 const Admin = () => {
   const [percent, setPercent] = useState(0);
   const [file, setFile] = useState("");
-  const [openAddImgModal, setOpenAddImgModal] = useState(false);
   const [openDishModal, setOpenDishModal] = useState(false);
-  const [openAllDishes, setOpenAllDishes] = useState(false);
   const [selectedDish, setSelectedDish] = useState({});
+  const [openedPanel, setOpenedPanel] = useState("home");
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
@@ -67,10 +66,6 @@ const Admin = () => {
     }
   };
 
-  const onClickOpenAddImgModal = () => {
-    setOpenAddImgModal(true);
-  };
-
   // delete dish from list
   const deleteHandler = async (dishId) => {
     try {
@@ -97,11 +92,14 @@ const Admin = () => {
     }
   };
 
-  // open new page with dishes
-  const onClickSeeAllDishes = () => {
-    setOpenAllDishes(!openAllDishes);
-    getData();
+  // open panels
+  const onClickOpenPanel = (name) => {
+    setOpenedPanel(name);
   };
+
+  useEffect(() => {
+    getData();
+  }, [openedPanel === "allDishes"]);
 
   // submit new dish
   const onSubmitDishHandler = async (e) => {
@@ -175,40 +173,58 @@ const Admin = () => {
               <div className="admin-panel-left">
                 <ul>
                   <li>
-                    <button className="btn">Home</button>
+                    <button
+                      className="btn"
+                      onClick={() => onClickOpenPanel("home")}
+                    >
+                      Home
+                    </button>
                   </li>
                   <li>
-                    <button className="btn">Add Dish</button>
+                    <button
+                      className="btn"
+                      onClick={() => onClickOpenPanel("addDish")}
+                    >
+                      Add Dish
+                    </button>
                   </li>
                   <li>
-                    <button className="btn">Dish List</button>
+                    <button
+                      className="btn"
+                      onClick={() => onClickOpenPanel("allDishes")}
+                    >
+                      Dish List
+                    </button>
                   </li>
                 </ul>
                 <button className="btn">Log Out</button>
               </div>
               <div className="admin-panel-right">
-                <form onSubmit={onSubmitDishHandler}>
-                  {renderInputs}
-                  <div className="admin-panel__add-image">
-                    <h2 className="title">Upload Image</h2>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={onClickUploadImage}
-                    />
-                    <button
-                      className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-                      onClick={handleImageUpload}
-                    >
-                      Add Image
-                    </button>
-                    <p className="mt-2">{percent}% done</p>
+                {openedPanel === "home" && <h1>Welcome</h1>}
+                {openedPanel === "addDish" && (
+                  <form onSubmit={onSubmitDishHandler}>
+                    {renderInputs}
+                    <div className="admin-panel__add-image">
+                      <h2 className="title">Upload Image</h2>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={onClickUploadImage}
+                      />
+                      <button
+                        className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        onClick={handleImageUpload}
+                      >
+                        Add Image
+                      </button>
+                      <p className="mt-2">{percent}% done</p>
 
-                    <button type="submit" className="btn">
-                      Add Dish
-                    </button>
-                  </div>
-                </form>
+                      <button type="submit" className="btn">
+                        Add Dish
+                      </button>
+                    </div>
+                  </form>
+                )}
                 {percent === 100 ? (
                   <img
                     src={dish.image}
@@ -216,10 +232,46 @@ const Admin = () => {
                     className="dish__preview-image"
                   />
                 ) : null}
+                {openDishModal && selectedDish && (
+                  <CustomModal
+                    name={selectedDish.name}
+                    description={selectedDish.description}
+                    price={selectedDish.price}
+                    image={selectedDish.image}
+                    id={selectedDish.id}
+                    deleteHandler={() => deleteHandler(selectedDish.id)}
+                    onClick={() => setOpenDishModal(!openDishModal)}
+                  />
+                )}
+                {openedPanel === "allDishes" && (
+                  <div className="dish__grid">
+                    {dishes.map((el, index) => (
+                      <div
+                        key={index}
+                        id={el.id}
+                        className="dish-box"
+                        onClick={() => onClickSelectDish(el)}
+                      >
+                        <img
+                          src={el.image}
+                          className="dish-box__img"
+                          loading="lazy"
+                          alt={el.name}
+                        />
+                        <div>
+                          <p className="text-lg font-semibold">{el.name}</p>
+                          <p className="text-lg font-semibold">${el.price}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </section>
+        <div className="circle circle1"></div>
+        <div className="circle circle2"></div>
       </div>
     </>
     // <>
@@ -278,37 +330,37 @@ const Admin = () => {
     //     </div>
     //   ) : (
     //     <>
-    //       {openDishModal && selectedDish && (
-    //         <CustomModal
-    //           name={selectedDish.name}
-    //           description={selectedDish.description}
-    //           price={selectedDish.price}
-    //           image={selectedDish.image}
-    //           id={selectedDish.id}
-    //           deleteHandler={() => deleteHandler(selectedDish.id)}
-    //           onClick={() => setOpenDishModal(!openDishModal)}
-    //         />
-    //       )}
+    // {openDishModal && selectedDish && (
+    //   <CustomModal
+    //     name={selectedDish.name}
+    //     description={selectedDish.description}
+    //     price={selectedDish.price}
+    //     image={selectedDish.image}
+    //     id={selectedDish.id}
+    //     deleteHandler={() => deleteHandler(selectedDish.id)}
+    //     onClick={() => setOpenDishModal(!openDishModal)}
+    //   />
+    // )}
     //       <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg ">
-    //         {dishes.map((el, index) => (
-    //           <div
-    //             key={index}
-    //             id={el.id}
-    //             className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
-    //             onClick={() => onClickSelectDish(el)}
-    //           >
-    //             <img
-    //               src={el.image}
-    //               className="w-16 h-16 object-cover rounded"
-    //               loading="lazy"
-    //               alt={el.name}
-    //             />
-    //             <div>
-    //               <p className="text-lg font-semibold">{el.name}</p>
-    //               <p className="text-lg font-semibold">${el.price}</p>
-    //             </div>
-    //           </div>
-    //         ))}
+    // {dishes.map((el, index) => (
+    //   <div
+    //     key={index}
+    //     id={el.id}
+    //     className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
+    //     onClick={() => onClickSelectDish(el)}
+    //   >
+    //     <img
+    //       src={el.image}
+    //       className="w-16 h-16 object-cover rounded"
+    //       loading="lazy"
+    //       alt={el.name}
+    //     />
+    //     <div>
+    //       <p className="text-lg font-semibold">{el.name}</p>
+    //       <p className="text-lg font-semibold">${el.price}</p>
+    //     </div>
+    //   </div>
+    // ))}
     //       </div>
     //       <div className="mt-4 text-center">
     //         <button
