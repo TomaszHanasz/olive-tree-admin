@@ -98,7 +98,7 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    getData();
+    getData(); // eslint-disable-next-line
   }, [openedPanel === "allDishes"]);
 
   // submit new dish

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./customModal.style.css";
 
 const CustomModal = (props) => {
-  const { name, image, price, description, onClick, deleteHandler, id } = props;
+  const { name, image, price, description, onClick, deleteHandler } = props;
 
   const [confirmRemoval, setConfirmRemoval] = useState(false);
 

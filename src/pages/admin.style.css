@@ -77,6 +77,7 @@
   flex-direction: column;
   text-align: center;
   gap: 0.5rem;
+  max-width: 100%;
 }
 
 .btn {
@@ -144,6 +145,7 @@
 
 .dish-box__img {
   width: 45%;
+  height: 80%;
   object-fit: cover;
 }
 
@@ -154,6 +156,10 @@
 @media screen and (max-width: 1100px) {
   .admin-panel-glass {
     width: 80%;
+  }
+
+  .dish__grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -166,7 +172,13 @@
   .title {
     height: fit-content;
   }
+
   .admin-panel {
     height: 95%;
+    padding: 0;
+  }
+
+  .dish__grid {
+    grid-template-columns: 1fr;
   }
 }
