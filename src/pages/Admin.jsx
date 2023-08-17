@@ -258,9 +258,9 @@ const Admin = () => {
                           loading="lazy"
                           alt={el.name}
                         />
-                        <div>
-                          <p className="text-lg font-semibold">{el.name}</p>
-                          <p className="text-lg font-semibold">${el.price}</p>
+                        <div className="dish-box__text">
+                          <p>{el.name}</p>
+                          <p>${el.price}</p>
                         </div>
                       </div>
                     ))}
