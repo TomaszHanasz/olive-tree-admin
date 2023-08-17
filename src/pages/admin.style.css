@@ -1,5 +1,5 @@
 .admin-panel-background {
-  min-height: 100vh;
+  min-height: 100svh;
   width: 100%;
   background: linear-gradient(
     to right top,
@@ -13,8 +13,8 @@
 
 .admin-panel-glass {
   width: 60%;
-  height: 80vh;
-  min-height: 80vh;
+  height: 80svh;
+  min-height: 80svh;
   border-radius: 15px;
   background: linear-gradient(
     to right bottom,
@@ -32,7 +32,7 @@
 }
 
 .title {
-  height: 5vh;
+  height: 5svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +44,7 @@
   display: flex;
   padding: 0 1rem;
   width: 100%;
-  height: 75vh;
+  height: 75svh;
 }
 
 .admin-panel-left {
@@ -166,7 +166,7 @@
 @media screen and (max-width: 800px) {
   .admin-panel-glass {
     width: 100%;
-    height: 100vh;
+    height: 100svh;
   }
 
   .title {
