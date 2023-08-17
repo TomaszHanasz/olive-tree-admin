@@ -13,6 +13,7 @@ import {
 import useDishManagement from "../hooks/useDishManagement";
 import CustomInput from "../components/customInput/CustomInput";
 import CustomModal from "../components/customModal/CustomModal";
+import "./admin.style.css";
 
 const Admin = () => {
   const [percent, setPercent] = useState(0);
@@ -28,6 +29,7 @@ const Admin = () => {
   // image handling
   const onClickUploadImage = (e) => {
     setFile(e.target.files[0]);
+    console.log(file);
   };
 
   const handleImageUpload = () => {
@@ -134,56 +136,15 @@ const Admin = () => {
     console.log(selectedDish);
   };
 
-  const addImageModal = (
-    <div className=" fixed inset-0 bg-black bg-opacity-50 transition-opacity">
-      <div className=" relative w-full max-w-md p-6 mx-auto mt-20 bg-white rounded-lg shadow-md ">
-        <h2 className="text-xl font-semibold mb-4">Upload Image</h2>
-        <input type="file" accept="image/*" onChange={onClickUploadImage} />
-        <button
-          className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={handleImageUpload}
-        >
-          Add Image
-        </button>
-        <p className="mt-2">{percent}% done</p>
-        {percent === 100 ? (
-          <img
-            src={dish.image}
-            alt="Preview"
-            className="mt-4 max-w-full h-auto"
-          />
-        ) : null}
-        <button
-          className="absolute top-0 right-0 p-2 text-gray-500 hover:text-gray-700"
-          onClick={() => setOpenAddImgModal(!openAddImgModal)}
-        >
-          <svg
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-
   const renderInputs = (
-    <section className=" w-full lg:flex flex-col lg:w-2/4 mx-auto md:flex md:w-3/4 sm: flex sm:w-full ">
+    <section className="admin-panel__inputs">
       <CustomInput
         name="name"
         value={dish.name}
         type="text"
         onChange={onChangeHandler}
         label="Name"
-        className=" lg: w-1/2 mx-auto mb-4"
+        className=" lg: w-1/2 mx-auto mb-4 bg-black"
       />
       <CustomInput
         name="price"
@@ -206,104 +167,160 @@ const Admin = () => {
 
   return (
     <>
-      {!openAllDishes ? (
-        <div className="lg:mx-auto lg:w-2/3 text-center p-8 md:w-11/12 mx-auto sm:w-full">
-          <form
-            onSubmit={onSubmitDishHandler}
-            className="bg-gray-100 p-6 rounded-lg"
-          >
-            {openAddImgModal && addImageModal}
-            {renderInputs}
-            <div className=" flex flex-col mx-auto w-32">
-              <button
-                onClick={onClickOpenAddImgModal}
-                className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
-              >
-                Add image
-              </button>
-              <button
-                type="submit"
-                className={`${
-                  !dish.name ||
-                  !dish.price ||
-                  !dish.description ||
-                  percent !== 100
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white px-4 py-2 rounded-lg`}
-                disabled={
-                  !dish.name ||
-                  !dish.price ||
-                  !dish.description ||
-                  percent !== 100
-                }
-                title={
-                  !dish.name ||
-                  !dish.price ||
-                  !dish.description ||
-                  percent !== 100
-                    ? "Please fill in all fields before adding"
-                    : ""
-                }
-              >
-                Add Dish
-              </button>
-            </div>
-          </form>
-          <div>
-            <button
-              onClick={onClickSeeAllDishes}
-              className=" text-white px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 mt-4"
-            >
-              See all dishes
-            </button>
-          </div>
-        </div>
-      ) : (
-        <>
-          {openDishModal && selectedDish && (
-            <CustomModal
-              name={selectedDish.name}
-              description={selectedDish.description}
-              price={selectedDish.price}
-              image={selectedDish.image}
-              id={selectedDish.id}
-              deleteHandler={() => deleteHandler(selectedDish.id)}
-              onClick={() => setOpenDishModal(!openDishModal)}
-            />
-          )}
-          <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg">
-            {dishes.map((el, index) => (
-              <div
-                key={index}
-                id={el.id}
-                className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
-                onClick={() => onClickSelectDish(el)}
-              >
-                <img
-                  src={el.image}
-                  className="w-16 h-16 object-cover rounded"
-                  loading="lazy"
-                  alt={el.name}
-                />
-                <div>
-                  <p className="text-lg font-semibold">{el.name}</p>
-                  <p className="text-lg font-semibold">${el.price}</p>
-                </div>
+      <div className="admin-panel-background">
+        <section className="admin-panel-glass">
+          <div className="admin-panel-container">
+            <h1 className="title">Admin Panel</h1>
+            <div className="admin-panel">
+              <div className="admin-panel-left">
+                <ul>
+                  <li>
+                    <button className="btn">Home</button>
+                  </li>
+                  <li>
+                    <button className="btn">Add Dish</button>
+                  </li>
+                  <li>
+                    <button className="btn">Dish List</button>
+                  </li>
+                </ul>
+                <button className="btn">Log Out</button>
               </div>
-            ))}
+              <div className="admin-panel-right">
+                <form onSubmit={onSubmitDishHandler}>
+                  {renderInputs}
+                  <div className="admin-panel__add-image">
+                    <h2 className="title">Upload Image</h2>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={onClickUploadImage}
+                    />
+                    <button
+                      className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      onClick={handleImageUpload}
+                    >
+                      Add Image
+                    </button>
+                    <p className="mt-2">{percent}% done</p>
+
+                    <button type="submit" className="btn">
+                      Add Dish
+                    </button>
+                  </div>
+                </form>
+                {percent === 100 ? (
+                  <img
+                    src={dish.image}
+                    alt="Preview"
+                    className="dish__preview-image"
+                  />
+                ) : null}
+              </div>
+            </div>
           </div>
-          <div className="mt-4 text-center">
-            <button
-              onClick={onClickSeeAllDishes}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-            >
-              Back to Add Dish
-            </button>
-          </div>
-        </>
-      )}
+        </section>
+      </div>
     </>
+    // <>
+    //   {!openAllDishes ? (
+    //     <div className="lg:mx-auto lg:w-2/3 text-center p-8 md:w-11/12 mx-auto sm:w-full ">
+    //       <form
+    //         onSubmit={onSubmitDishHandler}
+    //         className="bg-gray-100 p-6 rounded-lg h-[80vh]"
+    //       >
+    //         {openAddImgModal && addImageModal}
+    //         {renderInputs}
+    //         <div className=" flex flex-col mx-auto w-32">
+    //           <button
+    //             onClick={onClickOpenAddImgModal}
+    //             className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
+    //           >
+    //             Add image
+    //           </button>
+    //           <button
+    //             type="submit"
+    //             className={`${
+    //               !dish.name ||
+    //               !dish.price ||
+    //               !dish.description ||
+    //               percent !== 100
+    //                 ? "bg-gray-400 cursor-not-allowed"
+    //                 : "bg-blue-500 hover:bg-blue-600"
+    //             } text-white px-4 py-2 rounded-lg`}
+    //             disabled={
+    //               !dish.name ||
+    //               !dish.price ||
+    //               !dish.description ||
+    //               percent !== 100
+    //             }
+    //             title={
+    //               !dish.name ||
+    //               !dish.price ||
+    //               !dish.description ||
+    //               percent !== 100
+    //                 ? "Please fill in all fields before adding"
+    //                 : ""
+    //             }
+    //           >
+    //             Add Dish
+    //           </button>
+    //         </div>
+    //       </form>
+    //       <div>
+    //         <button
+    //           onClick={onClickSeeAllDishes}
+    //           className=" text-white px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 mt-4"
+    //         >
+    //           See all dishes
+    //         </button>
+    //       </div>
+    //     </div>
+    //   ) : (
+    //     <>
+    //       {openDishModal && selectedDish && (
+    //         <CustomModal
+    //           name={selectedDish.name}
+    //           description={selectedDish.description}
+    //           price={selectedDish.price}
+    //           image={selectedDish.image}
+    //           id={selectedDish.id}
+    //           deleteHandler={() => deleteHandler(selectedDish.id)}
+    //           onClick={() => setOpenDishModal(!openDishModal)}
+    //         />
+    //       )}
+    //       <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg ">
+    //         {dishes.map((el, index) => (
+    //           <div
+    //             key={index}
+    //             id={el.id}
+    //             className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
+    //             onClick={() => onClickSelectDish(el)}
+    //           >
+    //             <img
+    //               src={el.image}
+    //               className="w-16 h-16 object-cover rounded"
+    //               loading="lazy"
+    //               alt={el.name}
+    //             />
+    //             <div>
+    //               <p className="text-lg font-semibold">{el.name}</p>
+    //               <p className="text-lg font-semibold">${el.price}</p>
+    //             </div>
+    //           </div>
+    //         ))}
+    //       </div>
+    //       <div className="mt-4 text-center">
+    //         <button
+    //           onClick={onClickSeeAllDishes}
+    //           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+    //         >
+    //           Back to Add Dish
+    //         </button>
+    //       </div>
+    //     </>
+    //   )}
+    // </>
   );
 };
 
