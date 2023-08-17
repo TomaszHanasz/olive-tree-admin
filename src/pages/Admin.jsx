@@ -141,7 +141,7 @@ const Admin = () => {
         value={dish.name}
         type="text"
         onChange={onChangeHandler}
-        label="Name"
+        label="1.Name"
         className=" lg: w-1/2 mx-auto mb-4 bg-black"
       />
       <CustomInput
@@ -149,7 +149,7 @@ const Admin = () => {
         value={dish.price}
         type="number"
         onChange={onChangeHandler}
-        label="Price"
+        label="2.Price"
         className=" lg: w-1/2 mx-auto mb-4"
       />
       <CustomInput
@@ -157,7 +157,7 @@ const Admin = () => {
         value={dish.description}
         type="text"
         onChange={onChangeHandler}
-        label="Description"
+        label="3.Description"
         className=" lg: w-1/2 mx-auto mb-4"
       />
     </section>
@@ -202,36 +202,47 @@ const Admin = () => {
               <div className="admin-panel-right">
                 {openedPanel === "home" && <h1>Welcome</h1>}
                 {openedPanel === "addDish" && (
-                  <form onSubmit={onSubmitDishHandler}>
-                    {renderInputs}
-                    <div className="admin-panel__add-image">
-                      <h2 className="title">Upload Image</h2>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={onClickUploadImage}
-                      />
-                      <button
-                        className="px-4 py-2 mt-4 bg-blue-500 text-white rounded hover:bg-blue-600"
-                        onClick={handleImageUpload}
-                      >
-                        Add Image
-                      </button>
-                      <p className="mt-2">{percent}% done</p>
+                  <>
+                    <form onSubmit={onSubmitDishHandler}>
+                      {renderInputs}
+                      <div className="admin-panel__add-image">
+                        <p style={{ margin: "10px auto" }}>4.Upload Image</p>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={onClickUploadImage}
+                        />
+                        <button
+                          className="btn add-dish__btn"
+                          onClick={handleImageUpload}
+                        >
+                          5.Add Image
+                        </button>
+                        <p className="mt-2">{percent}% done</p>
 
-                      <button type="submit" className="btn">
-                        Add Dish
-                      </button>
-                    </div>
-                  </form>
+                        <button
+                          type="submit"
+                          className="btn add-dish__btn"
+                          disabled={
+                            !dish.name ||
+                            !dish.price ||
+                            !dish.description ||
+                            percent !== 100
+                          }
+                        >
+                          Add Dish
+                        </button>
+                      </div>
+                    </form>
+                    {percent === 100 ? (
+                      <img
+                        src={dish.image}
+                        alt="Preview"
+                        className="dish__preview-image"
+                      />
+                    ) : null}
+                  </>
                 )}
-                {percent === 100 ? (
-                  <img
-                    src={dish.image}
-                    alt="Preview"
-                    className="dish__preview-image"
-                  />
-                ) : null}
                 {openDishModal && selectedDish && (
                   <CustomModal
                     name={selectedDish.name}
