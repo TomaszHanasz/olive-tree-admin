@@ -1,15 +1,39 @@
-.sign-in__container {
+.sign-in__background {
+  min-height: 100svh;
+  width: 100%;
+  background: linear-gradient(
+    to right top,
+    rgb(230, 183, 95),
+    rgb(253, 165, 0)
+  );
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 80svh;
+  align-items: center;
+}
+
+.sign-in__container {
+  border-radius: 15px;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  backdrop-filter: blur(4rem);
+  z-index: 3;
 }
 
 .sign-in__form {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  background-color: bisque;
+  border-radius: 15px;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  backdrop-filter: blur(4rem);
+  z-index: 3;
   padding: 4rem;
 }
 
@@ -17,4 +41,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.sign-in__input input {
+  padding: 5px;
 }

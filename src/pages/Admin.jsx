@@ -239,7 +239,9 @@ const Admin = () => {
                 </button>
               </div>
               <div className="admin-panel-right">
-                {openedPanel === "home" && <h1>Welcome</h1>}
+                {openedPanel === "home" && (
+                  <h1>Welcome {user && user.email}</h1>
+                )}
                 {openedPanel === "addDish" && (
                   <>
                     <form onSubmit={onSubmitDishHandler}>

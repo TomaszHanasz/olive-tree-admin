@@ -43,9 +43,13 @@ const SignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit">Sign In</button>
+          <button type="submit" className="btn add-dish__btn">
+            Sign In
+          </button>
         </form>
       </div>
+      <div className="circle circle1"></div>
+      <div className="circle circle2"></div>
     </div>
   );
 };
