@@ -101,6 +101,12 @@
 
 .dishDetails-btn {
   border: rgba(128, 128, 128, 0.514) 1px solid;
+  font-size: 1rem;
+  height: 2rem;
+}
+
+.remove-btn {
+  background-color: rgb(230, 88, 88);
 }
 
 .btn:hover {

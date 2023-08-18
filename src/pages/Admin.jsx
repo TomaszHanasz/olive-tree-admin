@@ -21,6 +21,7 @@ const Admin = () => {
   const [selectedDish, setSelectedDish] = useState({});
   const [openedPanel, setOpenedPanel] = useState("home");
   const [hidden, setHidden] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
@@ -73,6 +74,7 @@ const Admin = () => {
       await getData();
       setOpenDishModal(false);
       setOpenedPanel("allDishes");
+      setConfirmRemove(false);
     } catch (error) {
       console.log("Deleting dish error", error);
     }
@@ -98,6 +100,7 @@ const Admin = () => {
     setOpenedPanel(name);
     setOpenDishModal(false);
     setSelectedDish({});
+    setConfirmRemove(false);
   };
 
   const allDishesOpened = openedPanel === "allDishes";
@@ -270,20 +273,44 @@ const Admin = () => {
                       className="selected-dish__image"
                       alt={selectedDish.name}
                     />
-                    <p>{selectedDish.name}</p>
+                    <p style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+                      {selectedDish.name}
+                    </p>
                     <p>{selectedDish.price}</p>
                     <p>{selectedDish.description}</p>
-                    <button
-                      className="btn dishDetails-btn"
-                      onClick={() => setOpenedPanel("allDishes")}
-                    >
-                      {" "}
-                      ≺{" "}
-                    </button>
                     <div>
-                      <button onClick={() => deleteHandler(selectedDish.id)}>
-                        Remove
+                      <button
+                        className="btn dishDetails-btn back-btn"
+                        onClick={() => setOpenedPanel("allDishes")}
+                      >
+                        Back
                       </button>
+                    </div>
+                    <div>
+                      {!confirmRemove && (
+                        <button
+                          className="btn dishDetails-btn"
+                          onClick={() => setConfirmRemove(true)}
+                        >
+                          Remove Dish
+                        </button>
+                      )}
+                      {confirmRemove && (
+                        <>
+                          <button
+                            className="btn dishDetails-btn remove-btn "
+                            onClick={() => deleteHandler(selectedDish.id)}
+                          >
+                            Remove
+                          </button>
+                          <button
+                            className="btn dishDetails-btn"
+                            onClick={() => setConfirmRemove(false)}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
