@@ -163,6 +163,22 @@
   width: 45%;
 }
 
+.selected-dish {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  overflow-y: scroll;
+}
+
+.selected-dish__image {
+  width: 50%;
+  height: 50%;
+  object-fit: cover;
+}
+
 @media screen and (max-width: 1100px) {
   .admin-panel-glass {
     width: 80%;
@@ -190,5 +206,9 @@
 
   .dish__grid {
     grid-template-columns: 1fr;
+  }
+
+  .selected-dish__image {
+    width: 75%;
   }
 }

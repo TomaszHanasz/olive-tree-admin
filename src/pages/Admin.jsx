@@ -95,10 +95,12 @@ const Admin = () => {
   // open panels
   const onClickOpenPanel = (name) => {
     setOpenedPanel(name);
+    setOpenDishModal(false);
+    setSelectedDish({});
   };
 
   useEffect(() => {
-    getData(); // eslint-disable-next-line
+    getData(); // eslint-disable-next-
   }, [openedPanel === "allDishes"]);
 
   // submit new dish
@@ -130,6 +132,7 @@ const Admin = () => {
   //open dish modal
   const onClickSelectDish = (dish) => {
     setSelectedDish({ ...dish });
+    setOpenedPanel("dishDetails");
     setOpenDishModal(!openDishModal);
     console.log(selectedDish);
   };
@@ -243,16 +246,20 @@ const Admin = () => {
                     ) : null}
                   </>
                 )}
-                {openDishModal && selectedDish && (
-                  <CustomModal
-                    name={selectedDish.name}
-                    description={selectedDish.description}
-                    price={selectedDish.price}
-                    image={selectedDish.image}
-                    id={selectedDish.id}
-                    deleteHandler={() => deleteHandler(selectedDish.id)}
-                    onClick={() => setOpenDishModal(!openDishModal)}
-                  />
+                {openedPanel === "dishDetails" && selectedDish && (
+                  <div className="selected-dish">
+                    <img
+                      src={selectedDish.image}
+                      className="selected-dish__image"
+                    />
+                    <p>{selectedDish.name}</p>
+                    <p>{selectedDish.price}</p>
+                    <p>{selectedDish.description}</p>
+                    <button onClick={() => setOpenedPanel("allDishes")}>
+                      {" "}
+                      ≺{" "}
+                    </button>
+                  </div>
                 )}
                 {openedPanel === "allDishes" && (
                   <div className="dish__grid">
