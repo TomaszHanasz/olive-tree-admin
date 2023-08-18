@@ -12,7 +12,6 @@ import {
 } from "firebase/firestore/lite";
 import useDishManagement from "../hooks/useDishManagement";
 import CustomInput from "../components/customInput/CustomInput";
-import CustomModal from "../components/customModal/CustomModal";
 import "./admin.style.css";
 
 const Admin = () => {
