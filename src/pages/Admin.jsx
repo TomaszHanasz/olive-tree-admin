@@ -12,6 +12,8 @@ import {
 } from "firebase/firestore/lite";
 import useDishManagement from "../hooks/useDishManagement";
 import CustomInput from "../components/customInput/CustomInput";
+import { UserAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./admin.style.css";
 
 const Admin = () => {
@@ -22,9 +24,21 @@ const Admin = () => {
   const [openedPanel, setOpenedPanel] = useState("home");
   const [hidden, setHidden] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const { user, logOut } = UserAuth();
+  const navigate = useNavigate();
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
+
+  // log out
+  const handleLogOut = async () => {
+    try {
+      await logOut();
+      navigate("/");
+    } catch (e) {
+      console.log(e.message);
+    }
+  };
 
   // image handling
   const onClickUploadImage = (e) => {
@@ -220,7 +234,9 @@ const Admin = () => {
                     </button>
                   </li>
                 </ul>
-                <button className="btn">Log Out</button>
+                <button className="btn" onClick={handleLogOut}>
+                  Log Out
+                </button>
               </div>
               <div className="admin-panel-right">
                 {openedPanel === "home" && <h1>Welcome</h1>}

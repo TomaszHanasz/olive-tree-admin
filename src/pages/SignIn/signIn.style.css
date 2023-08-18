@@ -1,0 +1,20 @@
+.sign-in__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80svh;
+}
+
+.sign-in__form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: bisque;
+  padding: 4rem;
+}
+
+.sign-in__input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
