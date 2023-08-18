@@ -20,6 +20,7 @@ const Admin = () => {
   const [openDishModal, setOpenDishModal] = useState(false);
   const [selectedDish, setSelectedDish] = useState({});
   const [openedPanel, setOpenedPanel] = useState("home");
+  const [hidden, setHidden] = useState(false);
 
   const { dish, dishes, setDishes, setDish, onChangeHandler } =
     useDishManagement();
@@ -71,6 +72,7 @@ const Admin = () => {
       await deleteDoc(doc(db, "dishes", dishId));
       await getData();
       setOpenDishModal(false);
+      setOpenedPanel("allDishes");
     } catch (error) {
       console.log("Deleting dish error", error);
     }
@@ -98,9 +100,11 @@ const Admin = () => {
     setSelectedDish({});
   };
 
+  const allDishesOpened = openedPanel === "allDishes";
+
   useEffect(() => {
-    getData(); // eslint-disable-next-
-  }, [openedPanel === "allDishes"]);
+    getData(); // eslint-disable-next-line
+  }, [allDishesOpened]);
 
   // submit new dish
   const onSubmitDishHandler = async (e) => {
@@ -134,6 +138,11 @@ const Admin = () => {
     setOpenedPanel("dishDetails");
     setOpenDishModal(!openDishModal);
     console.log(selectedDish);
+  };
+
+  //hide left panel
+  const onClickHidePanel = () => {
+    setHidden(!hidden);
   };
 
   const renderInputs = (
@@ -170,9 +179,18 @@ const Admin = () => {
       <div className="admin-panel-background">
         <section className="admin-panel-glass">
           <div className="admin-panel-container">
-            <h1 className="title">Admin Panel</h1>
+            <h1 className="title">
+              Admin Panel
+              <button
+                className="btn close-left-panel"
+                onClick={() => onClickHidePanel(!hidden)}
+              >
+                {hidden ? ">" : "<"}
+              </button>
+            </h1>
+
             <div className="admin-panel">
-              <div className="admin-panel-left">
+              <div className={`admin-panel-left ${hidden ? "hidden" : ""}`}>
                 <ul>
                   <li>
                     <button
@@ -250,14 +268,23 @@ const Admin = () => {
                     <img
                       src={selectedDish.image}
                       className="selected-dish__image"
+                      alt={selectedDish.name}
                     />
                     <p>{selectedDish.name}</p>
                     <p>{selectedDish.price}</p>
                     <p>{selectedDish.description}</p>
-                    <button onClick={() => setOpenedPanel("allDishes")}>
+                    <button
+                      className="btn dishDetails-btn"
+                      onClick={() => setOpenedPanel("allDishes")}
+                    >
                       {" "}
                       ≺{" "}
                     </button>
+                    <div>
+                      <button onClick={() => deleteHandler(selectedDish.id)}>
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 )}
                 {openedPanel === "allDishes" && (
@@ -291,105 +318,6 @@ const Admin = () => {
         <div className="circle circle2"></div>
       </div>
     </>
-    // <>
-    //   {!openAllDishes ? (
-    //     <div className="lg:mx-auto lg:w-2/3 text-center p-8 md:w-11/12 mx-auto sm:w-full ">
-    //       <form
-    //         onSubmit={onSubmitDishHandler}
-    //         className="bg-gray-100 p-6 rounded-lg h-[80vh]"
-    //       >
-    //         {openAddImgModal && addImageModal}
-    //         {renderInputs}
-    //         <div className=" flex flex-col mx-auto w-32">
-    //           <button
-    //             onClick={onClickOpenAddImgModal}
-    //             className="bg-green-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-green-600"
-    //           >
-    //             Add image
-    //           </button>
-    //           <button
-    //             type="submit"
-    //             className={`${
-    //               !dish.name ||
-    //               !dish.price ||
-    //               !dish.description ||
-    //               percent !== 100
-    //                 ? "bg-gray-400 cursor-not-allowed"
-    //                 : "bg-blue-500 hover:bg-blue-600"
-    //             } text-white px-4 py-2 rounded-lg`}
-    //             disabled={
-    //               !dish.name ||
-    //               !dish.price ||
-    //               !dish.description ||
-    //               percent !== 100
-    //             }
-    //             title={
-    //               !dish.name ||
-    //               !dish.price ||
-    //               !dish.description ||
-    //               percent !== 100
-    //                 ? "Please fill in all fields before adding"
-    //                 : ""
-    //             }
-    //           >
-    //             Add Dish
-    //           </button>
-    //         </div>
-    //       </form>
-    //       <div>
-    //         <button
-    //           onClick={onClickSeeAllDishes}
-    //           className=" text-white px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 mt-4"
-    //         >
-    //           See all dishes
-    //         </button>
-    //       </div>
-    //     </div>
-    //   ) : (
-    //     <>
-    // {openDishModal && selectedDish && (
-    //   <CustomModal
-    //     name={selectedDish.name}
-    //     description={selectedDish.description}
-    //     price={selectedDish.price}
-    //     image={selectedDish.image}
-    //     id={selectedDish.id}
-    //     deleteHandler={() => deleteHandler(selectedDish.id)}
-    //     onClick={() => setOpenDishModal(!openDishModal)}
-    //   />
-    // )}
-    //       <div className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3 grid gap-4 mt-8 lg:w-2/3 mx-auto bg-gray-100 p-6 rounded-lg ">
-    // {dishes.map((el, index) => (
-    //   <div
-    //     key={index}
-    //     id={el.id}
-    //     className="flex items-center justify-evenly space-x-4 border p-4 rounded-lg bg-white"
-    //     onClick={() => onClickSelectDish(el)}
-    //   >
-    //     <img
-    //       src={el.image}
-    //       className="w-16 h-16 object-cover rounded"
-    //       loading="lazy"
-    //       alt={el.name}
-    //     />
-    //     <div>
-    //       <p className="text-lg font-semibold">{el.name}</p>
-    //       <p className="text-lg font-semibold">${el.price}</p>
-    //     </div>
-    //   </div>
-    // ))}
-    //       </div>
-    //       <div className="mt-4 text-center">
-    //         <button
-    //           onClick={onClickSeeAllDishes}
-    //           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-    //         >
-    //           Back to Add Dish
-    //         </button>
-    //       </div>
-    //     </>
-    //   )}
-    // </>
   );
 };
 
