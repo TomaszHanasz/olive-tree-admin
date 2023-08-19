@@ -257,7 +257,7 @@ const Admin = () => {
                         >
                           5.Add Image
                         </button>
-                        <p className="mt-2">{percent}% done</p>
+                        <p className="mt-2">Image upload - {percent}% done</p>
 
                         <button
                           type="submit"
@@ -269,7 +269,7 @@ const Admin = () => {
                             percent !== 100
                           }
                         >
-                          Add Dish
+                          6.Add Dish
                         </button>
                       </div>
                     </form>
