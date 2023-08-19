@@ -196,15 +196,7 @@ const Admin = () => {
       <div className="admin-panel-background">
         <section className="admin-panel-glass">
           <div className="admin-panel-container">
-            <h1 className="title">
-              Admin Panel
-              <button
-                className="btn close-left-panel"
-                onClick={() => onClickHidePanel(!hidden)}
-              >
-                {hidden ? ">" : "<"}
-              </button>
-            </h1>
+            <h1 className="title">Admin Panel</h1>
 
             <div className="admin-panel">
               <div className={`admin-panel-left ${hidden ? "hidden" : ""}`}>
@@ -239,6 +231,12 @@ const Admin = () => {
                 </button>
               </div>
               <div className="admin-panel-right">
+                <button
+                  className="btn close-left-panel"
+                  onClick={() => onClickHidePanel(!hidden)}
+                >
+                  {hidden ? ">" : "<"}
+                </button>
                 {openedPanel === "home" && (
                   <h1>Welcome {user && user.email}</h1>
                 )}
