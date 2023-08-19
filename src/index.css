@@ -9,3 +9,18 @@
 html {
   font-family: "Merriweather Sans", sans-serif;
 }
+
+::-webkit-scrollbar {
+  width: 20px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.281);
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fba709;
+  border-radius: 10px;
+}
