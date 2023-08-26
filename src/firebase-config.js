@@ -8,12 +8,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyA8QixNrbmsIvUD33ClbbnLE1LjN6ly_gk",
-  authDomain: "cafealif-473e9.firebaseapp.com",
-  projectId: "cafealif-473e9",
-  storageBucket: "cafealif-473e9.appspot.com",
-  messagingSenderId: "39055977451",
-  appId: "1:39055977451:web:8361ac9589f742d94487ae"
+  apiKey: "AIzaSyBayKZNtBddxn9g6t71P5CRIcsGSy5eOK4",
+  authDomain: "fir-todo-b5002.firebaseapp.com",
+  projectId: "fir-todo-b5002",
+  storageBucket: "fir-todo-b5002.appspot.com",
+  messagingSenderId: "769940109681",
+  appId: "1:769940109681:web:daabe726c2e9e39a669ed0",
+  measurementId: "G-KDPLEE9LZQ"
 };
 
 // Initialize Firebase
