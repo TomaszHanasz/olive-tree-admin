@@ -14,6 +14,7 @@ import useDishManagement from "../hooks/useDishManagement";
 import CustomInput from "../components/customInput/CustomInput";
 import { UserAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import SelectCategory from "../components/selectCategory/SelectCategory";
 import "./admin.style.css";
 
 const Admin = () => {
@@ -24,6 +25,7 @@ const Admin = () => {
   const [openedPanel, setOpenedPanel] = useState("home");
   const [hidden, setHidden] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState(false);
+  const [category, setCategory] = useState("");
   const { user, logOut } = UserAuth();
   const navigate = useNavigate();
 
@@ -38,6 +40,11 @@ const Admin = () => {
     } catch (e) {
       console.log(e.message);
     }
+  };
+
+  // pick category
+  const handleChangeCategory = (e) => {
+    setCategory(e.target.value);
   };
 
   // image handling
@@ -74,8 +81,9 @@ const Admin = () => {
 
   const onClickAddDishToDatabase = async (newDish) => {
     try {
-      const dishesCollection = collection(db, "dishes");
+      const dishesCollection = collection(db, `${category}`);
       await addDoc(dishesCollection, newDish);
+      console.log(dishesCollection);
     } catch (error) {
       console.log("Error adding to database", error);
     }
@@ -144,6 +152,7 @@ const Admin = () => {
       price: 0,
       description: "",
       image: "",
+      hidden: false,
     });
     setFile("");
     setPercent(0);
@@ -164,12 +173,13 @@ const Admin = () => {
 
   const renderInputs = (
     <section className="admin-panel__inputs">
+      <SelectCategory onChange={handleChangeCategory} />
       <CustomInput
         name="name"
         value={dish.name}
         type="text"
         onChange={onChangeHandler}
-        label="1.Name"
+        label="2.Name"
         className=" lg: w-1/2 mx-auto mb-4 bg-black"
       />
       <CustomInput
@@ -177,7 +187,7 @@ const Admin = () => {
         value={dish.price}
         type="number"
         onChange={onChangeHandler}
-        label="2.Price"
+        label="3.Price"
         className=" lg: w-1/2 mx-auto mb-4"
       />
       <CustomInput
@@ -185,7 +195,7 @@ const Admin = () => {
         value={dish.description}
         type="text"
         onChange={onChangeHandler}
-        label="3.Description"
+        label="4.Description"
         className=" lg: w-1/2 mx-auto mb-4"
       />
     </section>
@@ -245,7 +255,7 @@ const Admin = () => {
                     <form onSubmit={onSubmitDishHandler}>
                       {renderInputs}
                       <div className="admin-panel__add-image">
-                        <p style={{ margin: "10px auto" }}>4.Upload Image</p>
+                        <p style={{ margin: "10px auto" }}>5.Upload Image</p>
                         <input
                           type="file"
                           accept="image/*"
@@ -255,7 +265,7 @@ const Admin = () => {
                           className="btn add-dish__btn"
                           onClick={handleImageUpload}
                         >
-                          5.Add Image
+                          6.Add Image
                         </button>
                         <p className="mt-2">Image upload - {percent}% done</p>
 
@@ -269,7 +279,7 @@ const Admin = () => {
                             percent !== 100
                           }
                         >
-                          6.Add Dish
+                          7.Add Dish
                         </button>
                       </div>
                     </form>
@@ -292,7 +302,7 @@ const Admin = () => {
                     <p style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
                       {selectedDish.name}
                     </p>
-                    <p>{selectedDish.price}</p>
+                    <p>${selectedDish.price}</p>
                     <p>{selectedDish.description}</p>
                     <div>
                       <button

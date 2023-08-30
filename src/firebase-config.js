@@ -15,6 +15,15 @@ const firebaseConfig = {
   messagingSenderId: "1075365647641",
   appId: "1:1075365647641:web:7aea2c92b6be6309a56188",
 };
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAVMPjGnu-wJ4s69ly-5Hsois-T7NCRhUM",
+//   authDomain: "olive-tree-restaurant.firebaseapp.com",
+//   databaseURL: "https://olive-tree-restaurant-default-rtdb.firebaseio.com",
+//   projectId: "olive-tree-restaurant",
+//   storageBucket: "olive-tree-restaurant.appspot.com",
+//   messagingSenderId: "1075365647641",
+//   appId: "1:1075365647641:web:7aea2c92b6be6309a56188",
+// };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
