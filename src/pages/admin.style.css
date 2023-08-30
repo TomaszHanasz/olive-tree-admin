@@ -139,8 +139,8 @@
 }
 
 .dish__preview-image {
-  max-width: 300px;
-  max-height: 300px;
+  max-width: 20%;
+  max-height: 20%;
   margin: 0 auto;
   object-fit: cover;
 }

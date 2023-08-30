@@ -8,12 +8,13 @@ import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAVMPjGnu-wJ4s69ly-5Hsois-T7NCRhUM",
-  authDomain: "olive-tree-restaurant.firebaseapp.com",
-  projectId: "olive-tree-restaurant",
-  storageBucket: "olive-tree-restaurant.appspot.com",
-  messagingSenderId: "1075365647641",
-  appId: "1:1075365647641:web:7aea2c92b6be6309a56188",
+  apiKey: "AIzaSyBayKZNtBddxn9g6t71P5CRIcsGSy5eOK4",
+  authDomain: "fir-todo-b5002.firebaseapp.com",
+  projectId: "fir-todo-b5002",
+  storageBucket: "fir-todo-b5002.appspot.com",
+  messagingSenderId: "769940109681",
+  appId: "1:769940109681:web:daabe726c2e9e39a669ed0",
+  measurementId: "G-KDPLEE9LZQ"
 };
 // const firebaseConfig = {
 //   apiKey: "AIzaSyAVMPjGnu-wJ4s69ly-5Hsois-T7NCRhUM",
